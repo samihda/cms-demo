@@ -1,0 +1,32 @@
+<p>Username: {{user.username}}</p>
+<p>Email: {{user.email}}</p>
+<form action="/profile" method="post">
+	<fieldset>
+		<legend>New article</legend>
+		<div>
+			<label>Title:</label>
+			<input type="text" name="title" />
+		</div>
+		<div>
+			<label>Body:</label>
+			<textarea name="body" rows="10" cols="50"></textarea>
+		</div>
+		<div>
+			<input type="submit" value="Submit" />
+		</div>
+	</fieldset>
+</form>
+<p>Articles:</p>
+<ul>
+	{{#each user.articles}}
+		<li>{{this.date}}: {{this.title}}
+			{{!-- <p>{{this.date}}</p>
+			<p>{{this.title}}</p>
+			<p>{{this.date}}</p> --}}
+		</li>
+	{{/each}}
+</ul>
+{{!-- {{#if user.emails}}
+	<p>Email: {{user.emails[0].value}}</p>
+{{/if}} --}}
+<a href="/logout">Log out</a>

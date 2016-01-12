@@ -1,0 +1,24 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "Demo Node.js CMS built using Express, MongoDB, and Passport",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "connect-ensure-login": "^0.1.1",
+    "cookie-parser": "^1.4.0",
+    "express": "^4.13.3",
+    "express-session": "^1.12.1",
+    "handlebars": "^4.0.5",
+    "hbs": "^4.0.0",
+    "mongoose": "^4.3.5",
+    "morgan": "^1.6.1",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0"
+  }
+}
