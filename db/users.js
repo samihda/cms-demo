@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-mongoose.connect('mongodb://localhost/cms-test-local2', function (err) {
+mongoose.connect('mongodb://localhost/cms-test', function (err) {
   if (err) {
     console.log('database connection error ' + err);
   }
