@@ -16,17 +16,14 @@
 		</div>
 	</fieldset>
 </form>
-<p>Articles:</p>
-<ul>
-	{{#each user.articles}}
-		<li>{{this.date}}: {{this.title}}
-			{{!-- <p>{{this.date}}</p>
-			<p>{{this.title}}</p>
-			<p>{{this.date}}</p> --}}
-		</li>
-	{{/each}}
-</ul>
-{{!-- {{#if user.emails}}
-	<p>Email: {{user.emails[0].value}}</p>
-{{/if}} --}}
+{{#if articles}}
+	<p>Articles:</p>
+	<ul>
+		{{#each articles}}
+			<li>{{this.date}}: {{this.title}}</li>
+		{{/each}}
+	</ul>
+{{else}}
+	<p>You don’t have any articles.</p>
+{{/if}}
 <a href="/logout">Log out</a>
