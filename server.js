@@ -3,6 +3,8 @@ var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
 var db = require('./db');
 
+
+// passport
 passport.use(new Strategy(function (username, password ,callback) {
 	db.users.findByUsername(username, function(err, user) {
 		if (err) { return callback(err); }
@@ -23,6 +25,8 @@ passport.deserializeUser(function (id, callback) {
 	});
 });
 
+
+// express app
 var app = express();
 
 app.set('views', __dirname + '/views');
@@ -36,6 +40,8 @@ app.use(require('express-session')({ secret: 'keyboard cat', resave: false, save
 app.use(passport.initialize());
 app.use(passport.session());
 
+
+// routes
 app.get('/', function (req, res) {
 	res.render('home', { user: req.user });
 });
@@ -52,11 +58,9 @@ app.post('/signup', function (req, res) {
 	});
 	user.save(function (err) {
 		if (err) {
-		console.log(err);
+			return console.error(err);
 		}
-		else {
 		console.log(user.username + ' inserted');
-		}
 	});
 	res.redirect('/login');
 });
@@ -74,48 +78,146 @@ app.get('/logout', function (req, res) {
 	res.redirect('/');
 });
 
+app.get('/articles', function (req, res) {
+	db.users.Article.find().sort({date: -1}).exec(function (err, list) {
+		if (err) {
+			return console.error(err);
+		}
+		res.render('articles', {articles: list});
+	});
+});
+
+app.get('/articles/:id', function (req, res) {
+	db.users.Article.findOne({_id: req.params.id}, function (err, post) {
+		if (err) {
+			return console.error(err);
+		}
+		res.render('article', {article: post});
+	});
+});
+
+// use client-side JS (AJAX) for delete and put methods
+/*app.delete('/articles/:id', function (req, res) {
+	db.users.Article.findOneAndDelete({_id: req.params.id}, function (err, deletedPost) {
+		if (err) {
+			return console.error(err);
+		}
+		console.log(deletedPost.title + ' deleted');
+		res.redirect('/profile');
+	});
+});
+
+app.put('/articles/:id', function (req, res) {
+	db.users.Article.findOneAndUpdate({_id: req.params.id}, {title: req.body.title, body: req.body.body}, function (err, deletedPost) {
+		if (err) {
+			return console.error(err);
+		}
+		console.log(deletedPost.title + ' deleted');
+		res.redirect('/profile');
+	});
+});*/
+
+/*app.get('/edit', require('connect-ensure-login').ensureLoggedIn(), function (req, res) {
+	res.render('edit', {article: article});
+});*/
+
 app.get('/profile', require('connect-ensure-login').ensureLoggedIn(), function (req, res) {
-	console.log(req.user);
-	res.render('profile', { user: req.user });
+	db.users.Article.find({author_id: req.user._id}).sort({date: -1}).exec(function (err, list) {
+		if (err) {
+			return console.error(err);
+		}
+		res.render('profile', { user: req.user, articles: list });
+	});
 });
 
 app.post('/profile', function (req, res) {
 	var article = new db.users.Article({
 		title: req.body.title,
-		body: req.body.body
+		body: req.body.body,
+		author_id: req.user._id
 	});
-	var articleArray;
+	article.save(function (err) {
+		if (err) {
+			return console.error(err);
+		}
+		console.log(article.title + ' added');
+		res.redirect('/profile');
+	});
+	/*var articleArray;
 	db.users.User.findOne({_id: req.user._id}, {password: 0}, function (err, user) {
 		if (err) {
-			console.log(err);
+			return console.error(err);
 		}
 		else {
 			console.log('profile for: ' + user);
 			user.articles.push(article);
+			// articleArray = user.articles;
+			// articleArray.push(article);
 			user.save(function (err) {
 				if (err) {
-					console.log(err);
+					return console.error(err);
 				}
 				else {
 					console.log('updated');
 				}
 			});
 		}
-    });
-	/*db.users.User.findAndModify({
+    });*/
+	/*db.users.findById(req.user._id, function (err, user) {
+		if (err) { return console.error(err) }
+		console.log('profile for: ' + user);
+		articleArray = user.articles;
+		articleArray.push(article);
+		//db.users.User.update({_id: req.body._id}, {articles: articleArray});
+		user.update({_id: req.body._id}, {$push: {articles: article}});
+	});*/
+	/*db.users.Article.remove({title: 'Tes'}, 1, function (err) {
+		if (err) return console.error(err);
+		else console.log('success');
+	});*/
+	/*db.users.Article.findAndModify({
+		query: {_id: '5694cb206a5a3bf01473a87b'},
+		remove: true
+	}, function (err, doc) {
+		if (err) {
+			return console.error(err);
+		}
+		else {
+			console.log('article removed');
+		}
+	});
+	db.users.User.findAndModify({
 		query: {_id: req.user._id},
 		update: {
 			$push: {articles: article}
 		}
 	}, function (err, doc) {
 		if (err) {
-			console.log(err);
+			return console.error(err);
 		}
 		else {
 			console.log('article added');
 		}
 	});*/
-	res.redirect('/profile');
+
+
+	/*db.users.User.findOne({username: 'Bobo'}, function (err, data) {
+	  if (err) {
+	    return console.error(err);
+	  }
+	  else {
+	    console.log(data);
+	  }
+	});*/
+	/*article.save(function (err) {
+	  if (err) {
+	    return console.error(err);
+	  }
+	  else {
+	    console.log(article.title + ' inserted');
+	  }
+	});*/
+	//res.redirect('/profile');
 });
 
 app.listen(3000);
