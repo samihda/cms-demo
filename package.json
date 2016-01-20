@@ -2,11 +2,13 @@
   "name": "test",
   "version": "1.0.0",
   "description": "Demo Node.js CMS built using Express, MongoDB, and Passport",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "tsc": "tsc",
+    "tsc:w": "tsc -w",
+    "start": "concurrent \"npm run tsc:w\" \"node server.js\""
   },
-  "author": "",
+  "author": "samihda",
   "license": "ISC",
   "dependencies": {
     "angular2": "^2.0.0-beta.0",
@@ -28,6 +30,7 @@
     "zone.js": "^0.5.10"
   },
   "devDependencies": {
+    "concurrently": "^1.0.0",
     "typescript": "^1.7.5"
   }
 }
