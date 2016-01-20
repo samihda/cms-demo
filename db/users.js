@@ -1,12 +1,15 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-mongoose.connect('mongodb://localhost/cms-test', function (err) {
+/*mongoose.connect('mongodb://localhost/cms-test', function (err) {
   if (err) {
     console.log('database connection error ' + err);
   }
   console.log('connected to mongodb');
-});
+});*/
+mongoose.connect('mongodb://localhost/cms-test');
+mongoose.connection.on('error', console.error.bind(console, 'connection error: '));
+mongoose.connection.once('open', console.log.bind(console, 'connected to mongodb'));
 
 var ArticleSchema = new Schema({
   title: String,
