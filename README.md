@@ -1,4 +1,4 @@
-#MEAN CMS
+# MEAN CMS
 
 This is a demo MEAN stack content management system (WIP). Components include:
 
@@ -7,4 +7,3 @@ This is a demo MEAN stack content management system (WIP). Components include:
 * Passport
 
 Clone, install dependencies with `$ npm install`, run with `$ npm start` (make sure mongod is running), then navigate to [http://localhost:3000/](http://127.0.0.1:3000/)
-
