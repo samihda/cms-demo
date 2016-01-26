@@ -1,9 +1,0 @@
-{{#if articles}}
-	<ul>
-		{{#each articles}}
-			<li>{{this.date}}: <a href="/articles/{{this._id}}">{{this.title}}</a></li>
-		{{/each}}
-	</ul>
-{{else}}
-	<p>No articles found.</p>
-{{/if}}

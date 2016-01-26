@@ -1,1 +1,4 @@
 node_modules
+unused
+public/app/*.js
+public/app/*.map

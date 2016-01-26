@@ -1,12 +1,13 @@
 var express = require('express');
 var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
-var db = require('./db');
+var db = require('./db/users');
+var routes = require('./routes');
 
 
 // passport
 passport.use(new Strategy(function (username, password ,callback) {
-	db.users.findByUsername(username, function(err, user) {
+	db.findByUsername(username, function(err, user) {
 		if (err) { return callback(err); }
 		if (!user) { return callback(null, false); }
 		if (user.password != password) { return callback(null, false); }
@@ -19,7 +20,7 @@ passport.serializeUser(function (user, callback) {
 });
 
 passport.deserializeUser(function (id, callback) {
-	db.users.findById(id, function (err, user) {
+	db.findById(id, function (err, user) {
 		if (err) { return callback(err); }
 		callback(null, user);
 	});
@@ -32,6 +33,10 @@ var app = express();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'hbs');
 
+app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/api'));
+app.use('/node_modules', express.static(__dirname + '/node_modules'));
+
 app.use(require('morgan')('combined'));
 app.use(require('cookie-parser')());
 app.use(require('body-parser').urlencoded({ extended: true }));
@@ -42,7 +47,7 @@ app.use(passport.session());
 
 
 // routes
-app.get('/', function (req, res) {
+/*app.get('/', function (req, res) {
 	res.render('home', { user: req.user });
 });
 
@@ -51,7 +56,7 @@ app.get('/signup', function (req, res) {
 });
 
 app.post('/signup', function (req, res) {
-	var user = new db.users.User({
+	var user = new db.User({
 		username: req.body.username,
 		password: req.body.password,
 		email: req.body.email
@@ -69,60 +74,8 @@ app.get('/login', function (req, res) {
 	res.render('login');
 });
 
-app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), function (req, res) {
-	res.redirect('/');
-});
-
-app.get('/logout', function (req, res) {
-	req.logout();
-	res.redirect('/');
-});
-
-app.get('/articles', function (req, res) {
-	db.users.Article.find().sort({date: -1}).exec(function (err, list) {
-		if (err) {
-			return console.error(err);
-		}
-		res.render('articles', {articles: list});
-	});
-});
-
-app.get('/articles/:id', function (req, res) {
-	db.users.Article.findOne({_id: req.params.id}, function (err, post) {
-		if (err) {
-			return console.error(err);
-		}
-		res.render('article', {article: post});
-	});
-});
-
-// use client-side JS (AJAX) for delete and put methods
-/*app.delete('/articles/:id', function (req, res) {
-	db.users.Article.findOneAndDelete({_id: req.params.id}, function (err, deletedPost) {
-		if (err) {
-			return console.error(err);
-		}
-		console.log(deletedPost.title + ' deleted');
-		res.redirect('/profile');
-	});
-});
-
-app.put('/articles/:id', function (req, res) {
-	db.users.Article.findOneAndUpdate({_id: req.params.id}, {title: req.body.title, body: req.body.body}, function (err, deletedPost) {
-		if (err) {
-			return console.error(err);
-		}
-		console.log(deletedPost.title + ' deleted');
-		res.redirect('/profile');
-	});
-});*/
-
-/*app.get('/edit', require('connect-ensure-login').ensureLoggedIn(), function (req, res) {
-	res.render('edit', {article: article});
-});*/
-
-app.get('/profile', require('connect-ensure-login').ensureLoggedIn(), function (req, res) {
-	db.users.Article.find({author_id: req.user._id}).sort({date: -1}).exec(function (err, list) {
+/*app.get('/profile', require('connect-ensure-login').ensureLoggedIn(), function (req, res) {
+	db.Article.find({author_id: req.user._id}).sort({date: -1}).exec(function (err, list) {
 		if (err) {
 			return console.error(err);
 		}
@@ -131,7 +84,7 @@ app.get('/profile', require('connect-ensure-login').ensureLoggedIn(), function (
 });
 
 app.post('/profile', function (req, res) {
-	var article = new db.users.Article({
+	var article = new db.Article({
 		title: req.body.title,
 		body: req.body.body,
 		author_id: req.user._id
@@ -143,7 +96,34 @@ app.post('/profile', function (req, res) {
 		console.log(article.title + ' added');
 		res.redirect('/profile');
 	});
+});*/
+
+
+// endpoints
+// user authentication
+app.post('/login', passport.authenticate('local', {failureRedirect: '/login'}), function (req, res) {
+	res.redirect('/');
 });
 
-app.listen(3000);
-console.log('Server started at http://127.0.0.1:3000');
+app.get('/logout', function (req, res) {
+	req.logout();
+	res.render('layout');
+});
+
+app.get('/profile', require('connect-ensure-login').ensureLoggedIn(), function (req, res) {
+	res.render('edit', {article: article});
+});
+
+
+// api
+app.get('/api/articles', db.getArticles);
+app.get('/api/articles/:id', db.getArticle);
+
+
+app.get('/', routes.index);
+app.get('*', routes.index);
+
+// start server
+app.listen(3000, function () {
+	console.log('Express server listening on http://127.0.0.1:3000');
+});

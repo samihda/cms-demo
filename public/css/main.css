@@ -1,0 +1,9 @@
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300);
+
+body {
+	max-width: 800px;
+	margin: 0 auto;
+	font-family: "Source Sans Pro", sans-serif;
+	font-weight: 400;
+	font-size: 1.25rem;
+}
