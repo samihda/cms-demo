@@ -1,9 +1,11 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var dbName = 'buecheler3';
+//var dbName = 'cms-test';
+
 
 // database connection
-// mongoose.connect('mongodb://localhost/cms-test');
-mongoose.connect('mongodb://localhost/buecheler3');
+mongoose.connect('mongodb://localhost/' + dbName);
 mongoose.connection.on('error', console.error.bind(console, 'Error connecting to database: '));
 mongoose.connection.once('open', console.log.bind(console, 'Connected to database'));
 
@@ -13,7 +15,7 @@ var ArticleSchema = new Schema({
     body: String,
     author_id: String,
     date: {
-    type: Date,
+    	type: Date,
         default: Date.now
     }
 });

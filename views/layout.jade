@@ -1,0 +1,28 @@
+doctype html
+html(lang="en")
+    head
+        title MEAN CMS
+        link(rel="stylesheet", type="text/css", href="/css/main.css")
+        base(href="/")
+        script(scr="/node_modules/es6-shim/es6-shim.min.js")
+        script(src="/node_modules/systemjs/dist/system-polyfills.js")
+        script(src="/node_modules/angular2/bundles/angular2-polyfills.js")
+        script(src="/node_modules/systemjs/dist/system.src.js")
+        script(src="/node_modules/rxjs/bundles/Rx.js")
+        script(src="/node_modules/angular2/bundles/angular2.dev.js")
+        script(src="/node_modules/angular2/bundles/router.dev.js")
+        script(src="https://code.angularjs.org/2.0.0-beta.0/http.dev.js")
+        script.
+            System.config({
+                packages: {        
+                    app: {
+                        format: 'register',
+                        defaultExtension: 'js'
+                    }
+                }
+            });
+            System.import('/app/js/boot').then(null, console.error.bind(console));
+
+    body
+        //- block content
+        my-app Loading...

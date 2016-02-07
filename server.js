@@ -31,11 +31,12 @@ passport.deserializeUser(function (id, callback) {
 var app = express();
 
 app.set('views', __dirname + '/views');
-app.set('view engine', 'hbs');
+app.set('view engine', 'jade');
 
 app.use(express.static(__dirname + '/public'));
-app.use(express.static(__dirname + '/api'));
+//app.use(express.static(__dirname + '/api'));
 app.use('/node_modules', express.static(__dirname + '/node_modules'));
+//app.use('/public', express.static(__dirname + '/public'));
 
 app.use(require('morgan')('combined'));
 app.use(require('cookie-parser')());
@@ -101,13 +102,20 @@ app.post('/profile', function (req, res) {
 
 // endpoints
 // user authentication
-app.post('/login', passport.authenticate('local', {failureRedirect: '/login'}), function (req, res) {
-	res.redirect('/');
+app.post('/api/login', passport.authenticate('local'), function (req, res) {
+	//console.log(req);
+    console.log(req.body);
+    res.json(req.user);
 });
 
-app.get('/logout', function (req, res) {
+app.post('/potato', function (req, res) {
+	res.send('potato');
+});
+
+app.get('/api/logout', function (req, res) {
 	req.logout();
-	res.render('layout');
+    res.send('logged out!');
+	//res.render('layout');
 });
 
 app.get('/profile', require('connect-ensure-login').ensureLoggedIn(), function (req, res) {
@@ -121,7 +129,7 @@ app.get('/api/articles/:id', db.getArticle);
 
 
 app.get('/', routes.index);
-app.get('*', routes.index);
+app.get('/*', routes.index);
 
 // start server
 app.listen(3000, function () {

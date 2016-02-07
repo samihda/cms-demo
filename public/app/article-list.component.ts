@@ -1,19 +1,20 @@
 import {Component} from 'angular2/core';
+import {ROUTER_DIRECTIVES} from 'angular2/router';
 import {ArticleService} from './article.service';
 import {OnInit} from 'angular2/core';
 
 @Component({
-	selector: 'article-list',
 	template: `<ul *ngIf="articles">
                 <li *ngFor="#article of articles">
-                    <a href="/articles/{{article._id}}">{{article.title}}</a>
+                    <a [routerLink]="['Article', { id: article._id }]">{{article.title}}</a>
                 </li>
                 </ul>
     `,
-    providers: [ArticleService]
+    providers: [ArticleService],
+    directives: [ROUTER_DIRECTIVES]
 })
 export class ArticleListComponent implements OnInit {
-	public articles: any;
+	articles;
     
     constructor(private _articleService: ArticleService) {}
     
@@ -21,7 +22,7 @@ export class ArticleListComponent implements OnInit {
         this._articleService.getArticles().subscribe(
             data => this.articles = data,
             error => alert(error),
-            () => console.log('request completed')
+            () => console.log('finished fetching list')
         );
     }
 }
