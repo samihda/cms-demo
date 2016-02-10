@@ -104,12 +104,8 @@ app.post('/profile', function (req, res) {
 // user authentication
 app.post('/api/login', passport.authenticate('local'), function (req, res) {
 	//console.log(req);
-    console.log(req.body);
+    //console.log(req.body);
     res.json(req.user);
-});
-
-app.post('/potato', function (req, res) {
-	res.send('potato');
 });
 
 app.get('/api/logout', function (req, res) {
@@ -118,9 +114,9 @@ app.get('/api/logout', function (req, res) {
 	//res.render('layout');
 });
 
-app.get('/profile', require('connect-ensure-login').ensureLoggedIn(), function (req, res) {
-	res.render('edit', {article: article});
-});
+// app.get('/profile', require('connect-ensure-login').ensureLoggedIn(), function (req, res) {
+// 	res.render('edit', {article: article});
+// });
 
 
 // api

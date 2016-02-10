@@ -4,7 +4,7 @@ import {ArticleService} from './article.service';
 import {OnInit} from 'angular2/core';
 
 @Component({
-	template: `<h2>{{title}}</h2>
+	template: `<h1>{{title}}</h1>
                 <p>{{body}}</p>
                 <p>{{date}}</p>
     `,

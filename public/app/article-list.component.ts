@@ -4,7 +4,8 @@ import {ArticleService} from './article.service';
 import {OnInit} from 'angular2/core';
 
 @Component({
-	template: `<ul *ngIf="articles">
+	template: `<h1>Articles</h1>
+                <ul *ngIf="articles">
                 <li *ngFor="#article of articles">
                     <a [routerLink]="['Article', { id: article._id }]">{{article.title}}</a>
                 </li>

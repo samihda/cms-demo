@@ -1,3 +1,4 @@
 exports.index = function (req, res) {
-	res.render('layout');
+    console.log(req.user);
+	res.render('layout', { user: req.user });
 };
