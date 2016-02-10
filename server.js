@@ -48,33 +48,6 @@ app.use(passport.session());
 
 
 // routes
-/*app.get('/', function (req, res) {
-	res.render('home', { user: req.user });
-});
-
-app.get('/signup', function (req, res) {
-	res.render('signup');
-});
-
-app.post('/signup', function (req, res) {
-	var user = new db.User({
-		username: req.body.username,
-		password: req.body.password,
-		email: req.body.email
-	});
-	user.save(function (err) {
-		if (err) {
-			return console.error(err);
-		}
-		console.log(user.username + ' inserted');
-	});
-	res.redirect('/login');
-});
-
-app.get('/login', function (req, res) {
-	res.render('login');
-});
-
 /*app.get('/profile', require('connect-ensure-login').ensureLoggedIn(), function (req, res) {
 	db.Article.find({author_id: req.user._id}).sort({date: -1}).exec(function (err, list) {
 		if (err) {
@@ -112,6 +85,26 @@ app.get('/api/logout', function (req, res) {
 	req.logout();
     res.send('logged out!');
 	//res.render('layout');
+});
+
+app.post('/api/signup', function (req, res, next) { // sign up and authenticate right away
+	//console.log(req.body);
+    var user = new db.User({
+		username: req.body.username,
+		password: req.body.password,
+		email: req.body.email
+	});
+	user.save(function (err) {
+		if (err) {
+			console.error(err);
+            return;
+		}
+		console.log(user.username + ' inserted');
+        next();
+	});
+	//res.json(req.user);
+}, passport.authenticate('local'), function (req, res) {
+    res.json(req.user);
 });
 
 // app.get('/profile', require('connect-ensure-login').ensureLoggedIn(), function (req, res) {

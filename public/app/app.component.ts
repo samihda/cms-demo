@@ -3,6 +3,7 @@ import {Router, RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
 import {AuthService} from './auth.service';
 import {HomeComponent} from './home.component';
 import {LoginComponent} from './login.component';
+import {SignupComponent} from './signup.component';
 import {ArticleListComponent} from './article-list.component';
 import {ArticleDetailComponent} from './article-detail.component';
 
@@ -11,7 +12,8 @@ import {ArticleDetailComponent} from './article-detail.component';
 	template: `<nav>
                     <a [routerLink]="['Home']">Home</a>
                     <a [routerLink]="['Articles']">Articles</a>
-                    <a *ngIf="!user" [routerLink]="['Login']">Login</a>
+                    <a *ngIf="!user" [routerLink]="['Login']">Log in</a>
+                    <a *ngIf="!user" [routerLink]="['Signup']">Sign up</a>
                     <a *ngIf="user" href="/logout" (click)="logout($event)">Logout</a>
                 </nav>
                 <router-outlet></router-outlet>
@@ -40,6 +42,11 @@ import {ArticleDetailComponent} from './article-detail.component';
         path:'/login',
         name: 'Login',
         component: LoginComponent
+    },
+    {
+        path:'/signup',
+        name: 'Signup',
+        component: SignupComponent
     }
 ])
 export class AppComponent {
@@ -51,9 +58,7 @@ export class AppComponent {
     ) {}
     
     logout(event) {
-        console.log(event.cancelable);
         event.preventDefault();
-        console.log(event.defaultPrevented);
         this._authService.logout().subscribe(
             data => {
                 console.log(data);

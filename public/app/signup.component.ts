@@ -3,8 +3,12 @@ import {NgForm} from 'angular2/common';
 import {AuthService} from './auth.service';
 
 @Component({
-	template: `<h1>Log in</h1>
+	template: `<h1>Sign up</h1>
                 <form>
+                    <div>
+                        <label>Email:</label>
+                        <input [(ngModel)]="email" type="text" name="email"/>
+                    </div>
                     <div>
                         <label>Username:</label>
                         <input [(ngModel)]="username" type="text" name="username"/>
@@ -20,7 +24,8 @@ import {AuthService} from './auth.service';
     `,
     providers: [AuthService]
 })
-export class LoginComponent {
+export class SignupComponent {
+    public email: string;
     public username: string;
     public password: string;
     
@@ -28,13 +33,12 @@ export class LoginComponent {
     
     submit() {
         // form not validated!
-        this._authService.login(this.username, this.password).subscribe(
+        this._authService.signup(this.email, this.username, this.password).subscribe(
             data => {
                 console.log(data);
                 this._authService.serverRootRedirect();
             },
-            error => console.log(error),
-            () => console.log('logging in finished') 
+            error => console.log(error) 
         );
     }
 }

@@ -36,6 +36,19 @@ export class AuthService {
         //return this._loginState.getState();
     }
     
+    signup(email: string, usr: string, pwd: string) {
+        if (this.checkAuth()) {
+            throw 'already logged in';
+        }
+        else {
+            // input not sanitized!
+            let body = 'email=' + email + '&username=' + usr + '&password=' + pwd;
+            let headers = new Headers({'Content-Type': 'application/x-www-form-urlencoded'});
+            let options = new RequestOptions({headers: headers});
+            return this._http.post('/api/signup', body, options).map(res => res.json());
+        }
+    }
+    
     login(usr: string, pwd: string) {
         if (this.checkAuth()) {
             throw 'already logged in';
