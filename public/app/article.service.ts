@@ -15,10 +15,14 @@ export class ArticleService {
     constructor(private _http: Http) {}
     
     getArticles() {
-        return this._http.get('/api/articles').map(res => res.json());
+        return this._http.get('/api/public').map(res => res.json());
     }
     
     getArticle(id: string) {
-        return this._http.get('/api/articles/' + id).map(res => res.json());
+        return this._http.get('/api/public/' + id).map(res => res.json());
+    }
+    
+    getUserArticles() {
+        return this._http.get('/api/protected').map(res => res.json());
     }
 }

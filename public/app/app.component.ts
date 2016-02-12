@@ -1,9 +1,10 @@
-import {Component} from 'angular2/core';
+import {Component, OnInit} from 'angular2/core';
 import {Router, RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
 import {AuthService} from './auth.service';
 import {HomeComponent} from './home.component';
 import {LoginComponent} from './login.component';
 import {SignupComponent} from './signup.component';
+import {ProfileComponent} from './profile.component';
 import {ArticleListComponent} from './article-list.component';
 import {ArticleDetailComponent} from './article-detail.component';
 
@@ -14,6 +15,7 @@ import {ArticleDetailComponent} from './article-detail.component';
                     <a [routerLink]="['Articles']">Articles</a>
                     <a *ngIf="!user" [routerLink]="['Login']">Log in</a>
                     <a *ngIf="!user" [routerLink]="['Signup']">Sign up</a>
+                    <a *ngIf="user" [routerLink]="['Profile']">Profile</a>
                     <a *ngIf="user" href="/logout" (click)="logout($event)">Logout</a>
                 </nav>
                 <router-outlet></router-outlet>
@@ -25,8 +27,7 @@ import {ArticleDetailComponent} from './article-detail.component';
     {
         path:'/',
         name: 'Home',
-        component: HomeComponent,
-        useAsDefault: true
+        component: HomeComponent
     },
     {
         path:'/articles',
@@ -39,6 +40,11 @@ import {ArticleDetailComponent} from './article-detail.component';
         component: ArticleDetailComponent
     },
     {
+        path:'/profile',
+        name: 'Profile',
+        component: ProfileComponent
+    },
+    {
         path:'/login',
         name: 'Login',
         component: LoginComponent
@@ -49,7 +55,7 @@ import {ArticleDetailComponent} from './article-detail.component';
         component: SignupComponent
     }
 ])
-export class AppComponent {
+export class AppComponent implements OnInit {
     public user: boolean = this._authService.checkAuth();
     
     constructor(
@@ -68,5 +74,15 @@ export class AppComponent {
             error => console.log(error),
             () => console.log('logging out finished') 
         );
+    }
+    
+    ngOnInit() {
+        this.user ? this._router.navigate(['Profile']) : this._router.navigate(['Home']);  
+        // if (this.user) {
+        //     this._router.navigate(['Profile']);
+        // }
+        // else {
+        //     this._router.navigate(['Home']);
+        // }
     }
 }

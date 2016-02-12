@@ -1,4 +1,5 @@
 node_modules
 unused
+typings
 public/app/*.js
 public/app/*.map

@@ -2,7 +2,10 @@ var express = require('express');
 var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
 var db = require('./db/users');
+//var articles = require('./api/articles');
+//var users = require('./api/users);
 var routes = require('./routes');
+var el = require('connect-ensure-login');
 
 
 // passport
@@ -33,10 +36,8 @@ var app = express();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
-app.use(express.static(__dirname + '/public'));
-//app.use(express.static(__dirname + '/api'));
+app.use(express.static(__dirname + '/public')); // access resources under '/public' from '/'
 app.use('/node_modules', express.static(__dirname + '/node_modules'));
-//app.use('/public', express.static(__dirname + '/public'));
 
 app.use(require('morgan')('combined'));
 app.use(require('cookie-parser')());
@@ -46,77 +47,65 @@ app.use(require('express-session')({ secret: 'keyboard cat', resave: false, save
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-// routes
-/*app.get('/profile', require('connect-ensure-login').ensureLoggedIn(), function (req, res) {
-	db.Article.find({author_id: req.user._id}).sort({date: -1}).exec(function (err, list) {
-		if (err) {
-			return console.error(err);
-		}
-		res.render('profile', { user: req.user, articles: list });
-	});
+app.use(function(err, req, res, next) {
+    console.error(err);
+    res.status(500);
+    res.render('error', {error: err});
 });
-
-app.post('/profile', function (req, res) {
-	var article = new db.Article({
-		title: req.body.title,
-		body: req.body.body,
-		author_id: req.user._id
-	});
-	article.save(function (err) {
-		if (err) {
-			return console.error(err);
-		}
-		console.log(article.title + ' added');
-		res.redirect('/profile');
-	});
-});*/
 
 
 // endpoints
 // user authentication
-app.post('/api/login', passport.authenticate('local'), function (req, res) {
-	//console.log(req);
-    //console.log(req.body);
-    res.json(req.user);
+app.post('/api/login', function (req, res) {
+    passport.authenticate('local', function (err, user, info) {
+        if (err) {
+            return console.error(err);
+        }
+        if (!user) {
+            return res.status(401).json({ message: 'invalid login' });
+        }
+        req.logIn(user, function (err) {
+            if (err) { return console.error(err); }
+            return res.json({ message: 'login successful' });
+        });
+    })(req, res);
 });
+// app.post('/api/login', passport.authenticate('local'), function (req, res) { //params: req.body.username & req.body.password
+// 	res.json({ message: 'logged in' });
+// });
 
 app.get('/api/logout', function (req, res) {
 	req.logout();
-    res.send('logged out!');
-	//res.render('layout');
+    res.json({ message: 'logged out' });
 });
 
 app.post('/api/signup', function (req, res, next) { // sign up and authenticate right away
-	//console.log(req.body);
-    var user = new db.User({
+	var user = new db.User({
 		username: req.body.username,
 		password: req.body.password,
 		email: req.body.email
 	});
 	user.save(function (err) {
 		if (err) {
-			console.error(err);
-            return;
+			return console.error(err);
 		}
 		console.log(user.username + ' inserted');
         next();
 	});
-	//res.json(req.user);
 }, passport.authenticate('local'), function (req, res) {
-    res.json(req.user);
+    res.json({ message: req.user.username + ' added.' });
 });
-
-// app.get('/profile', require('connect-ensure-login').ensureLoggedIn(), function (req, res) {
-// 	res.render('edit', {article: article});
-// });
 
 
 // api
-app.get('/api/articles', db.getArticles);
-app.get('/api/articles/:id', db.getArticle);
+app.get('/api/public', db.getArticles);
+app.get('/api/public/:id', db.getArticle);
+app.get('/api/protected', el.ensureLoggedIn('/'), db.getUserArticles); // user id has to be in the req.user (loggedin state)
+app.post('/api/protected', el.ensureLoggedIn('/'), db.postArticle);
+app.put('/api/protected/:id', el.ensureLoggedIn('/'), db.updateArticle);
+app.delete('/api/protected/:id', el.ensureLoggedIn('/'), db.deleteArticle);
 
-
+// routes
 app.get('/', routes.index);
 app.get('/*', routes.index);
 
