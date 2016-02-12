@@ -1,6 +1,8 @@
 # MEAN CMS
 
-This is a demo MEAN stack content management system (WIP). Components include:
+*WORK IN PROGRESS*
+
+This is a demo MEAN stack content management system. Components include:
 
 * Angular 2 Beta + TypeScript
 * MongoDB + Mongoose
