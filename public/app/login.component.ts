@@ -30,7 +30,7 @@ export class LoginComponent {
         // form not validated!
         this._authService.login(this.username, this.password).subscribe(
             data => {
-                console.log(data.message);
+                //console.log(data.message);
                 this._authService.serverRootRedirect();
             },
             error => console.log(error),

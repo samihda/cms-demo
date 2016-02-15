@@ -82,7 +82,7 @@ exports.updateArticle = function (req, res) {
     Article.findOneAndUpdate(
         {_id: req.params.id},
         {title: req.body.title, body: req.body.body},
-        {new: true},
+        {new: true}, // return the updated object instead of the old one
         
         function (err, updatedPost) {
             if (err) {
@@ -93,7 +93,7 @@ exports.updateArticle = function (req, res) {
 };
 
 exports.deleteArticle = function (req, res) {
-    Article.findOneAndDelete(
+    Article.findOneAndRemove(
         {_id: req.params.id},
         
         function (err, deletedPost) {

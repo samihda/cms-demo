@@ -31,14 +31,12 @@ export class AuthService {
             console.log('already logged in');
             return;
         }
-        else {
-            // input not sanitized!
-            let body = 'username=' + usr + '&password=' + pwd;
-            let headers = new Headers({'Content-Type': 'application/x-www-form-urlencoded'});
-            let options = new RequestOptions({headers: headers});
-            return this._http.post('/api/login', body, options).map(res => res.json());
-            //return this._http.post('/api/login', body, options);
-        }
+        // input not sanitized!
+        let body = 'username=' + usr + '&password=' + pwd;
+        let headers = new Headers({'Content-Type': 'application/x-www-form-urlencoded'});
+        let options = new RequestOptions({headers: headers});
+        return this._http.post('/api/login', body, options).map(res => res.json());
+        //return this._http.post('/api/login', body, options);
     }
     
     logout() {
@@ -46,8 +44,6 @@ export class AuthService {
             console.log('already logged out');
             return;
         }
-        else {
-            return this._http.get('/api/logout');
-        }
+        return this._http.get('/api/logout');
     }
 }

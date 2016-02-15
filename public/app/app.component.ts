@@ -27,7 +27,8 @@ import {ArticleDetailComponent} from './article-detail.component';
     {
         path:'/',
         name: 'Home',
-        component: HomeComponent
+        component: HomeComponent,
+        useAsDefault: true
     },
     {
         path:'/articles',
@@ -55,7 +56,7 @@ import {ArticleDetailComponent} from './article-detail.component';
         component: SignupComponent
     }
 ])
-export class AppComponent implements OnInit {
+export class AppComponent {
     public user: boolean = this._authService.checkAuth();
     
     constructor(
@@ -76,13 +77,7 @@ export class AppComponent implements OnInit {
         );
     }
     
-    ngOnInit() {
-        this.user ? this._router.navigate(['Profile']) : this._router.navigate(['Home']);  
-        // if (this.user) {
-        //     this._router.navigate(['Profile']);
-        // }
-        // else {
-        //     this._router.navigate(['Home']);
-        // }
-    }
+    // ngOnInit() {
+    //     this.user ? this._router.navigate(['Profile']) : this._router.navigate(['Home']);
+    // }
 }
