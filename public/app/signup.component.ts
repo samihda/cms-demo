@@ -18,7 +18,7 @@ import {AuthService} from './auth.service';
                         <input [(ngModel)]="password" type="password" name="password" required/>
                     </div>
                     <div>
-                        <button type="button" (click)="submit()">Login</button>
+                        <button type="button" (click)="submit()">Sign up</button>
                     </div>
                 </form>
     `,
