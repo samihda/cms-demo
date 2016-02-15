@@ -7,15 +7,15 @@ import {AuthService} from './auth.service';
                 <form>
                     <div>
                         <label>Email:</label>
-                        <input [(ngModel)]="email" type="text" name="email"/>
+                        <input [(ngModel)]="email" type="text" name="email" required/>
                     </div>
                     <div>
                         <label>Username:</label>
-                        <input [(ngModel)]="username" type="text" name="username"/>
+                        <input [(ngModel)]="username" type="text" name="username" required/>
                     </div>
                     <div>
                         <label>Password:</label>
-                        <input [(ngModel)]="password" type="password" name="password"/>
+                        <input [(ngModel)]="password" type="password" name="password" required/>
                     </div>
                     <div>
                         <button type="button" (click)="submit()">Login</button>
