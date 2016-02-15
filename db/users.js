@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var dbName = 'buecheler3';
-//var dbName = 'cms-test';
+var dbName = 'cms-test';
 
 
 // database connection
