@@ -33,7 +33,7 @@ exports.Article = Article;
 
 
 // API
-exports.getArticles = function (req, res) {
+/*exports.getArticles = function (req, res) {
     Article.find().sort({date: -1}).exec(function (err, data) {
         if (err) {
             return console.error(err);
@@ -125,4 +125,4 @@ exports.findByUsername = function(name, cb) {
             return cb(null, user);
         });
     });
-};
+};*/

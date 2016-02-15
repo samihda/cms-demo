@@ -18,7 +18,7 @@ exports.getArticle = function (req, res) {
     });
 };
 
-// may only be called by once authenticated
+// the following four functions may only be called once authenticated (passport)
 // requires user info in 'req.body'
 exports.getUserArticles = function (req, res) {
     db.Article.find({author_id: req.user._id}).sort({date: -1}).exec(function (err, data) {

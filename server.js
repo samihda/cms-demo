@@ -2,15 +2,15 @@ var express = require('express');
 var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
 var db = require('./db/users');
-//var articles = require('./api/articles');
-//var users = require('./api/users);
+var articles = require('./api/articles');
+var users = require('./api/users');
 var routes = require('./routes');
 var el = require('connect-ensure-login');
 
 
 // passport
 passport.use(new Strategy(function (username, password ,callback) {
-	db.findByUsername(username, function(err, user) {
+	users.findByUsername(username, function(err, user) {
 		if (err) { return callback(err); }
 		if (!user) { return callback(null, false); }
 		if (user.password != password) { return callback(null, false); }
@@ -23,7 +23,7 @@ passport.serializeUser(function (user, callback) {
 });
 
 passport.deserializeUser(function (id, callback) {
-	db.findById(id, function (err, user) {
+	users.findById(id, function (err, user) {
 		if (err) { return callback(err); }
 		callback(null, user);
 	});
@@ -54,8 +54,7 @@ app.use(function(err, req, res, next) {
 });
 
 
-// endpoints
-// user authentication
+// user authentication endpoints
 app.post('/api/login', function (req, res) {
     passport.authenticate('local', function (err, user, info) {
         if (err) {
@@ -70,9 +69,6 @@ app.post('/api/login', function (req, res) {
         });
     })(req, res);
 });
-// app.post('/api/login', passport.authenticate('local'), function (req, res) { //params: req.body.username & req.body.password
-// 	res.json({ message: 'logged in' });
-// });
 
 app.get('/api/logout', function (req, res) {
 	req.logout();
@@ -97,19 +93,21 @@ app.post('/api/signup', function (req, res, next) { // sign up and authenticate 
 });
 
 
-// api
-app.get('/api/public', db.getArticles);
-app.get('/api/public/:id', db.getArticle);
-app.get('/api/protected', el.ensureLoggedIn('/'), db.getUserArticles); // user id has to be in the req.user (loggedin state)
-app.post('/api/protected', el.ensureLoggedIn('/'), db.postArticle);
-app.put('/api/protected/:id', el.ensureLoggedIn('/'), db.updateArticle);
-app.delete('/api/protected/:id', el.ensureLoggedIn('/'), db.deleteArticle);
+// api endpoints
+app.get('/api/public', articles.getArticles);
+app.get('/api/public/:id', articles.getArticle);
+app.get('/api/protected', el.ensureLoggedIn('/'), articles.getUserArticles); // user id has to be in the req.user (loggedin state)
+app.post('/api/protected', el.ensureLoggedIn('/'), articles.postArticle);
+app.put('/api/protected/:id', el.ensureLoggedIn('/'), articles.updateArticle);
+app.delete('/api/protected/:id', el.ensureLoggedIn('/'), articles.deleteArticle);
+
 
 // routes
 app.get('/', routes.index);
 app.get('/*', routes.index);
 
-// start server
+
+// server
 app.listen(3000, function () {
 	console.log('Express server listening on http://127.0.0.1:3000');
 });

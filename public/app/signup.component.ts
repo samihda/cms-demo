@@ -33,7 +33,7 @@ export class SignupComponent {
     
     submit() {
         // form not validated!
-        this._authService.signup(this.email, this.username, this.password).subscribe(
+        this._authService.signup(this.email.trim(), this.username.trim(), this.password.trim()).subscribe(
             data => {
                 console.log(data);
                 this._authService.serverRootRedirect();

@@ -28,13 +28,13 @@ export class LoginComponent {
     
     submit() {
         // form not validated!
-        this._authService.login(this.username, this.password).subscribe(
+        this._authService.login(this.username.trim(), this.password.trim()).subscribe(
             data => {
-                //console.log(data.message);
+                alert(data.message);
                 this._authService.serverRootRedirect();
             },
             error => console.log(error),
-            () => console.log('logging in finished') 
+            () => console.log('logging in finished')
         );
     }
 }
