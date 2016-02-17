@@ -1,4 +1,4 @@
-var db = require('../db/users');
+var db = require('../db');
 
 exports.findById = function(id, cb) {
     process.nextTick(function() {

@@ -1,10 +1,12 @@
-var db = require('../db/users');
+var db = require('../db');
 
 exports.getArticles = function (req, res) {
     db.Article.find().sort({date: -1}).exec(function (err, data) {
         if (err) {
             return console.error(err);
         }
+        // var output = {data: data};
+        // res.json(output);
         res.json(data);
     });
 };
