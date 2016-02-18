@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var passportLocalMongoose = require('passport-local-mongoose');
 var dbName = 'cms-test';
 
 
@@ -20,13 +21,10 @@ var ArticleSchema = new Schema({
 });
 
 var UserSchema = new Schema({
-    username: String,
-    password: String,
     email: String
 });
 
-var Article = mongoose.model('Article', ArticleSchema);
-var User = mongoose.model('User', UserSchema);
+UserSchema.plugin(passportLocalMongoose); // passportLocalMongoose completes the schema
 
-exports.User = User;
-exports.Article = Article;
+exports.Article = mongoose.model('Article', ArticleSchema);
+exports.User = mongoose.model('User', UserSchema);

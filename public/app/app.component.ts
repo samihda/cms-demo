@@ -27,8 +27,7 @@ import {ArticleDetailComponent} from './article-detail.component';
     {
         path:'/',
         name: 'Home',
-        component: HomeComponent,
-        useAsDefault: true
+        component: HomeComponent
     },
     {
         path:'/articles',
@@ -77,7 +76,7 @@ export class AppComponent {
         );
     }
     
-    // ngOnInit() {
-    //     this.user ? this._router.navigate(['Profile']) : this._router.navigate(['Home']);
-    // }
+    ngOnInit() {
+        this.user ? this._router.navigate(['Profile']) : this._router.navigate(['Home']);
+    }
 }

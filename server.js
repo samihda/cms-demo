@@ -3,31 +3,15 @@ var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
 var db = require('./db');
 var articles = require('./api/articles');
-var users = require('./api/users');
+//var users = require('./api/users');
 var routes = require('./routes');
 var el = require('connect-ensure-login');
 
 
 // passport
-passport.use(new Strategy(function (username, password ,callback) {
-	users.findByUsername(username, function(err, user) {
-		if (err) { return callback(err); }
-		if (!user) { return callback(null, false); }
-		if (user.password != password) { return callback(null, false); }
-		return callback(null, user);
-	});
-}));
-
-passport.serializeUser(function (user, callback) {
-	callback(null, user._id);
-});
-
-passport.deserializeUser(function (id, callback) {
-	users.findById(id, function (err, user) {
-		if (err) { return callback(err); }
-		callback(null, user);
-	});
-});
+passport.use(new Strategy(db.User.authenticate()));
+passport.serializeUser(db.User.serializeUser());
+passport.deserializeUser(db.User.deserializeUser());
 
 
 // express app
@@ -47,16 +31,12 @@ app.use(require('express-session')({ secret: 'keyboard cat', resave: false, save
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(function(err, req, res, next) {
-    console.error(err);
-    res.status(500);
-    res.render('error', {error: err});
-});
+app.use(routes.error);
 
 
 // user authentication endpoints
 app.post('/api/login', function (req, res) {
-    passport.authenticate('local', function (err, user, info) {
+    passport.authenticate('local', function (err, user, info) { // fix error handling!
         if (err) {
             return console.error(err);
         }
@@ -75,23 +55,22 @@ app.get('/api/logout', function (req, res) {
     res.json({ message: 'logged out' });
 });
 
-app.post('/api/signup', function (req, res, next) { // sign up and authenticate right away
-	var user = new db.User({
-		username: req.body.username,
-		password: req.body.password,
-		email: req.body.email
-	});
-	user.save(function (err) {
-		if (err) {
-			return console.error(err);
-		}
-		console.log(user.username + ' inserted');
+app.post('/api/signup', function (req, res, next) {
+    db.User.register(new db.User({
+        username: req.body.username,
+        email: req.body.email
+    }),
+    req.body.password,
+    function (err) {
+        if (err) {
+            return console.error(err);
+        }
+        console.log(req.body.username + ' inserted');
         next();
-	});
+    });
 }, passport.authenticate('local'), function (req, res) {
-    res.json({ message: req.user.username + ' added.' });
+    res.json({ message: req.user.username + ' added.'});
 });
-
 
 // api endpoints
 app.get('/api/public', articles.getArticles);
